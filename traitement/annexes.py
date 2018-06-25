@@ -109,7 +109,7 @@ class Annexes(object):
                     # ## ligne Prix XA/J - Table Client Récap Articles/Compte
 
                     total = sco['mj']
-                    dico_prix_xaj = {'compte': intitule_compte, 'type': compte['type'],
+                    dico_prix_xaj = {'compte': intitule_compte, 'type': compte['type_tarif'],
                                      'procede': Outils.format_2_dec(sco['mj'])}
 
                     ligne = r'''%(compte)s & %(type)s & %(procede)s ''' % dico_prix_xaj
@@ -128,7 +128,7 @@ class Annexes(object):
                     # ## ligne Prix CAE X/J - Table Client Récap Procédés/Compte
 
                     rhj = client['rh'] * sco['somme_j_dhi']
-                    dico_prix_cae_xj = {'intitule': intitule_compte, 'type': compte['type'],
+                    dico_prix_cae_xj = {'intitule': intitule_compte, 'type': compte['type_tarif'],
                                         'maij': Outils.format_2_dec(sco['somme_j_mai']),
                                         'mm': Outils.format_2_dec(sco['somme_j_mm']),
                                         'mr': Outils.format_2_dec(sco['somme_j_mr']),

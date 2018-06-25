@@ -97,7 +97,7 @@ class Reservation(Fichier):
         pos = 0
         for donnee in self.donnees:
             id_compte = donnee['id_compte']
-            compte = comptes.donnes[id_compte]
+            compte = comptes.donnees[id_compte]
             code_client = compte['code_client']
             id_machine = donnee['id_machine']
             id_user = donnee['id_user']

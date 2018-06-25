@@ -108,7 +108,10 @@ class BilanMensuel(object):
                 if lvr['id_user'] not in users:
                     users.append(lvr['id_user'])
         for res in reservations.donnees:
-            if res['code_client'] == code_client:
+            cc = comptes.donnees[res['id_compte']]['code_client']
+            if cc == code_client:
+                if res['id_compte'] not in cptes:
+                    cptes.append(res['id_compte'])
                 if res['id_user'] not in users:
                     users.append(res['id_user'])
 

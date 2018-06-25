@@ -185,7 +185,7 @@ if pg_present:
     Recapitulatifs.cae(dossier_destination, edition, cae_lignes)
     lvr_lignes = Recapitulatifs.lvr_lignes(edition, livraisons, comptes, clients, users, prestations)
     Recapitulatifs.lvr(dossier_destination, edition, lvr_lignes)
-    res_lignes = Recapitulatifs.res_lignes(edition, reservations, clients, users, machines)
+    res_lignes = Recapitulatifs.res_lignes(edition, reservations, comptes, clients, users, machines)
     Recapitulatifs.res(dossier_destination, edition, res_lignes)
 
     for fichier in [acces.nom_fichier, clients.nom_fichier, emoluments.nom_fichier, coefprests.nom_fichier,

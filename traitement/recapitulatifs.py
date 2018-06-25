@@ -53,7 +53,7 @@ class Recapitulatifs(object):
             machine = machines.donnees[donnee['id_machine']]
             id_cout = machine['id_cout']
             ligne = [edition.annee, edition.mois, donnee['id_compte'], compte['numero'], compte['intitule'],
-                     compte['type'], compte['code_client'], client['abrev_labo'], donnee['id_user'], user['nom'],
+                     compte['type_tarif'], compte['code_client'], client['abrev_labo'], donnee['id_user'], user['nom'],
                      user['prenom'], donnee['id_machine'], machine['nom'], machine['id_cout'],
                      couts.donnees[id_cout]['intitule'], donnee['date_login'], donnee['duree_machine_hp'],
                      donnee['duree_machine_hc'], donnee['duree_operateur'], donnee['id_op'], donnee['nom_op'],
@@ -105,7 +105,7 @@ class Recapitulatifs(object):
             user = users.donnees[donnee['id_user']]
             prestation = prestations.donnees[donnee['id_prestation']]
             ligne = [edition.annee, edition.mois, donnee['id_compte'], compte['numero'], compte['intitule'],
-                     compte['type'], compte['code_client'], client['abrev_labo'], donnee['id_user'], user['nom'],
+                     compte['type_tarif'], compte['code_client'], client['abrev_labo'], donnee['id_user'], user['nom'],
                      user['prenom'], donnee['id_prestation'], prestation['no_prestation'],
                      prestation['designation'], donnee['date_livraison'], donnee['quantite'],
                      prestation['unite_prest'], donnee['rabais'], donnee['responsable'], donnee['id_livraison'],
@@ -138,11 +138,12 @@ class Recapitulatifs(object):
                 fichier_writer.writerow(ligne)
 
     @staticmethod
-    def res_lignes(edition, reservations, clients, users, machines):
+    def res_lignes(edition, reservations, comptes, clients, users, machines):
         """
         génération des lignes de données du récapitulatif des réservations
         :param edition: paramètres d'édition
-        :param reservations: 
+        :param reservations: réservations importées
+        :param comptes: comptes importés
         :param clients: clients importés
         :param users: users importés
         :param machines: machines importées
@@ -150,10 +151,11 @@ class Recapitulatifs(object):
         """
         lignes = []
         for donnee in reservations.donnees:
-            client = clients.donnees[donnee['code_client']]
+            compte = comptes.donnees[donnee['id_compte']]
+            client = clients.donnees[compte['code_client']]
             user = users.donnees[donnee['id_user']]
             machine = machines.donnees[donnee['id_machine']]
-            ligne = [edition.annee, edition.mois, donnee['code_client'], client['abrev_labo'],
+            ligne = [edition.annee, edition.mois, compte['code_client'], client['abrev_labo'],
                      donnee['id_user'], user['nom'], user['prenom'], donnee['id_machine'], machine['nom'],
                      donnee['date_debut'], donnee['duree_hp'], donnee['duree_hc'],
                      donnee['duree_ouvree'], donnee['date_reservation'], donnee['date_suppression']]

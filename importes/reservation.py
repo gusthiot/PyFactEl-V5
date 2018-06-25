@@ -8,7 +8,7 @@ class Reservation(Fichier):
     Classe pour l'importation des données de Réservations
     """
 
-    cles = ['annee', 'mois', 'code_client', 'id_user', 'id_machine', 'date_debut', 'duree_hp', 'duree_hc',
+    cles = ['annee', 'mois', 'id_compte', 'id_user', 'id_machine', 'date_debut', 'duree_hp', 'duree_hc',
             'duree_ouvree', 'date_reservation', 'date_suppression']
     nom_fichier = "res.csv"
     libelle = "Réservation Equipement"
@@ -17,11 +17,11 @@ class Reservation(Fichier):
         super().__init__(*args, **kwargs)
         self.sommes = {}
 
-    def est_coherent(self, clients, machines, users):
+    def est_coherent(self, comptes, machines, users):
         """
-        vérifie que les données du fichier importé sont cohérentes (code client parmi clients,
+        vérifie que les données du fichier importé sont cohérentes (id compte parmi comptes,
         id machine parmi machines), et efface les colonnes mois et année
-        :param clients: clients importés
+        :param comptes: comptes importés
         :param machines: machines importées
         :param users: users importés
         :return: 1 s'il y a une erreur, 0 sinon
@@ -40,11 +40,10 @@ class Reservation(Fichier):
         donnees_list = []
 
         for donnee in self.donnees:
-            if donnee['code_client'] == "":
-                msg += "le code client de la ligne " + str(ligne) + " ne peut être vide\n"
-            elif donnee['code_client'] not in clients.obtenir_codes():
-                msg += "le code client '" + donnee['code_client'] + "' de la ligne " + str(ligne) + " n'est pas " \
-                                                                                                    "référencé\n"
+            if donnee['id_compte'] == "":
+                msg += "le id compte de la ligne " + str(ligne) + " ne peut être vide\n"
+            elif comptes.contient_id(donnee['id_compte']) == 0:
+                msg += "le id compte '" + donnee['id_compte'] + "' de la ligne " + str(ligne) + " n'est pas référencé\n"
 
             if donnee['id_machine'] == "":
                 msg += "le machine id de la ligne " + str(ligne) + " ne peut être vide\n"
@@ -80,14 +79,14 @@ class Reservation(Fichier):
             return 1
         return 0
 
-    def calcul_montants(self, machines, categprix, clients, verification, couts):
+    def calcul_montants(self, machines, categprix, clients, comptes, verification):
         """
         calcule les sous-totaux nécessaires
         :param machines: machines importées et vérifiées
         :param categprix: catégories prix importés et vérifiés
         :param clients: clients importés et vérifiés
+        :param comptes: comptes importés
         :param verification: pour vérifier si les dates et les cohérences sont correctes
-        :param couts: catégories coûts importées
         """
         if verification.a_verifier != 0:
             info = self.libelle + ". vous devez faire les vérifications avant de calculer les montants"
@@ -97,7 +96,9 @@ class Reservation(Fichier):
         donnees_list = []
         pos = 0
         for donnee in self.donnees:
-            code_client = donnee['code_client']
+            id_compte = donnee['id_compte']
+            compte = comptes.donnes[id_compte]
+            code_client = compte['code_client']
             id_machine = donnee['id_machine']
             id_user = donnee['id_user']
             machine = machines.donnees[id_machine]

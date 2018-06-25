@@ -80,13 +80,14 @@ class Verification(object):
         verif += categprix.est_coherent(generaux, couts)
         verif += coefprests.est_coherent(generaux)
         verif += clients.est_coherent(emoluments, generaux)
-        verif += reservations.est_coherent(clients, machines, users)
+        verif += reservations.est_coherent(comptes, machines, users)
         verif += docpdf.est_coherent(generaux, clients)
+        verif += comptes.est_coherent(clients)
+
+        if verif > 0:
+            return verif
 
         comptes_actifs = Verification.obtenir_comptes_actifs(acces, livraisons)
-
-        verif += comptes.est_coherent(comptes_actifs)
-
         clients_actifs = Verification.obtenir_clients_actifs(comptes_actifs, comptes)
 
         if (edition.version > 0) and (len(clients_actifs) > 1):

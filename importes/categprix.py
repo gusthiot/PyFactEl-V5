@@ -52,7 +52,7 @@ class CategPrix(Fichier):
 
             if donnee['id_cat_cout'] == "":
                 msg += "l'id cout " + str(ligne) + " ne peut être vide\n"
-            elif not couts.contient_id(donnee['id_cat_cout']):
+            elif couts.contient_id(donnee['id_cat_cout']) == 0:
                 msg += "l'id cout de la ligne " + str(ligne) + " n'existe pas dans les catégories coûts\n"
             elif donnee['id_cat_cout'] not in ids:
                 ids.append(donnee['id_cat_cout'])

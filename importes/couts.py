@@ -20,17 +20,13 @@ class Couts(Fichier):
         :param id_cat: id à vérifier
         :return: 1 si id contenu, 0 sinon
         """
-        ligne = 1
         if self.verifie_coherence == 1:
-            for cle, cat in self.donnees.items():
-                if cat['id_cat_cout'] == id_cat:
-                    return ligne
-                ligne += 1
+            if id_cat in self.donnees.keys():
+                    return 1
         else:
             for cat in self.donnees:
                 if cat['id_cat_cout'] == id_cat:
-                    return ligne
-                ligne += 1
+                    return 1
         return 0
 
     def est_coherent(self):

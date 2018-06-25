@@ -7,7 +7,7 @@ class Compte(Fichier):
     Classe pour l'importation des données de Comptes Cmi
     """
 
-    cles = ['annee', 'mois', 'id_compte', 'numero', 'intitule', 'type', 'code_client']
+    cles = ['annee', 'mois', 'id_compte', 'numero', 'intitule', 'type_tarif', 'code_client', 'type_subside']
     nom_fichier = "compte.csv"
     libelle = "Comptes"
     
@@ -18,20 +18,19 @@ class Compte(Fichier):
         :return: 1 si id contenu, 0 sinon
         """
         if self.verifie_coherence == 1:
-            for cle, compte in self.donnees.items():
-                if compte['id_compte'] == id_compte:
-                    return 1
+            if id_compte in self.donnees.keys():
+                return 1
         else:
             for compte in self.donnees:
                 if compte['id_compte'] == id_compte:
                     return 1
         return 0
 
-    def est_coherent(self, comptes_actifs):
+    def est_coherent(self, clients):
         """
         vérifie que les données du fichier importé sont cohérentes (code client dans clients,
-        ou alors absent des clients actifs, id compte unique), et efface les colonnes mois et année
-        :param comptes_actifs: codes des clients présents dans accès, réservations et livraisons
+        id compte unique), et efface les colonnes mois et année
+        :param clients: clients importés
         :return: 1 s'il y a une erreur, 0 sinon
         """
         if self.verifie_date == 0:
@@ -50,8 +49,10 @@ class Compte(Fichier):
 
         for donnee in self.donnees:
             if donnee['code_client'] == "":
-                if donnee['id_compte'] in comptes_actifs:
-                    msg += "le code client de la ligne " + str(ligne) + " ne peut être vide si le compte est utilisé\n"
+                msg += "le code client de la ligne " + str(ligne) + " ne peut être vide\n"
+            elif donnee['code_client'] not in clients.donnees:
+                msg += "le code client " + donnee['code_client'] + " de la ligne " + str(ligne) + \
+                       " n'est pas référencé\n"
                 continue
 
             if donnee['id_compte'] == "":

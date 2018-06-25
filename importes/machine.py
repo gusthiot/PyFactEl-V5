@@ -18,17 +18,13 @@ class Machine(Fichier):
         :param id_machine: id à vérifier
         :return: 1 si id contenu, 0 sinon
         """
-        ligne = 1
         if self.verifie_coherence == 1:
-            for cle, machine in self.donnees.items():
-                if machine['id_machine'] == id_machine:
-                    return ligne
-                ligne += 1
+            if id_machine in self.donnees.keys():
+                    return 1
         else:
             for machine in self.donnees:
                 if machine['id_machine'] == id_machine:
-                    return ligne
-                ligne += 1
+                    return 1
         return 0
 
     def est_coherent(self, couts):

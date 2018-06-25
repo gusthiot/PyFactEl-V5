@@ -19,8 +19,7 @@ class Prestation(Fichier):
         :return: 1 si id contenu, 0 sinon
         """
         if self.verifie_coherence == 1:
-            for cle, prestation in self.donnees.items():
-                if prestation['id_prestation'] == id_prestation:
+            if id_prestation in self.donnees.keys():
                     return 1
         else:
             for prestation in self.donnees:

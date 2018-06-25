@@ -144,7 +144,7 @@ if pg_present:
     dossier_destination = DossierDestination(dossier_csv)
 
     livraisons.calcul_montants(prestations, coefprests, clients, verification, comptes)
-    reservations.calcul_montants(machines, categprix, clients, verification, couts)
+    reservations.calcul_montants(machines, categprix, clients, comptes, verification)
     acces.calcul_montants(machines, categprix, clients, verification, couts, comptes)
 
     sommes = Sommes(verification, generaux)

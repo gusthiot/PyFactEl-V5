@@ -7,7 +7,7 @@ class CoefPrest(Fichier):
     Classe pour l'importation des données de Coefficients Prestations
     """
 
-    cles = ['annee', 'mois', 'nature', 'categorie', 'nom_categorie', 'coefficient']
+    cles = ['annee', 'mois', 'nature', 'categorie', 'coefficient']
     nom_fichier = "coeffprestation.csv"
     libelle = "Coefficients Prestations"
 

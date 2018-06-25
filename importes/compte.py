@@ -53,7 +53,6 @@ class Compte(Fichier):
             elif donnee['code_client'] not in clients.donnees:
                 msg += "le code client " + donnee['code_client'] + " de la ligne " + str(ligne) + \
                        " n'est pas référencé\n"
-                continue
 
             if donnee['id_compte'] == "":
                 msg += "le compte id de la ligne " + str(ligne) + " ne peut être vide\n"

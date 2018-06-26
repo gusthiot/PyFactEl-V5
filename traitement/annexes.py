@@ -242,28 +242,31 @@ class Annexes(object):
                 Latex.creer_latex_pdf('Annexe-client' + suffixe, contenu_annexe_client)
                 pdfs_annexes['Annexe-client'] = ['Annexe-client' + suffixe + ".pdf"]
 
-                contenu_annexe_projets = Annexes.entete(edition)
-                contenu_annexe_projets += contenu_projets
-                contenu_annexe_projets += r'''\end{document}'''
-                Latex.creer_latex_pdf('Annexe-projets' + suffixe, contenu_annexe_projets)
-                pdfs_annexes['Annexe-projets'] = ['Annexe-projets' + suffixe + ".pdf"]
+                if not contenu_projets == "":
+                    contenu_annexe_projets = Annexes.entete(edition)
+                    contenu_annexe_projets += contenu_projets
+                    contenu_annexe_projets += r'''\end{document}'''
+                    Latex.creer_latex_pdf('Annexe-projets' + suffixe, contenu_annexe_projets)
+                    pdfs_annexes['Annexe-projets'] = ['Annexe-projets' + suffixe + ".pdf"]
 
-                contenu_annexe_details = Annexes.entete(edition)
-                contenu_annexe_details += contenu_details
+                contenu_details_2 = ""
                 if code_client in reservations.sommes or contenu_cae_xmu != "":
-                    contenu_annexe_details += Annexes.titre_annexe(client, edition, generaux, reference,
-                                                                   "Annexe détaillée des pénalités de réservation",
-                                                                   "Annexe facture")
-                    contenu_annexe_details += Annexes.section(client, generaux, reference,
-                                                              "Annexe détaillée des pénalités de réservation")
-                    contenu_annexe_details += TablesAnnexes.table_tps_penares_xmu(code_client, scl, acces.sommes,
-                                                                                  reservations.sommes, machines, users)
-                    contenu_annexe_details += TablesAnnexes.table_tps_m_cae_xmu(code_client, acces, contenu_cae_xmu)
-                    contenu_annexe_details += TablesAnnexes.table_tps_res_xmu(code_client, reservations, machines,
-                                                                              users)
-                contenu_annexe_details += r'''\end{document}'''
-                Latex.creer_latex_pdf('Annexe-détails' + suffixe, contenu_annexe_details)
-                pdfs_annexes['Annexe-détails'] = ['Annexe-détails' + suffixe + ".pdf"]
+                    contenu_details_2 += Annexes.titre_annexe(client, edition, generaux, reference,
+                                                              "Annexe détaillée des pénalités de réservation",
+                                                              "Annexe facture")
+                    contenu_details_2 += Annexes.section(client, generaux, reference,
+                                                         "Annexe détaillée des pénalités de réservation")
+                    contenu_details_2 += TablesAnnexes.table_tps_penares_xmu(code_client, scl, acces.sommes,
+                                                                             reservations.sommes, machines, users)
+                    contenu_details_2 += TablesAnnexes.table_tps_m_cae_xmu(code_client, acces, contenu_cae_xmu)
+                    contenu_details_2 += TablesAnnexes.table_tps_res_xmu(code_client, reservations, machines, users)
+                if not contenu_details == "" or not contenu_details_2 == "":
+                    contenu_annexe_details = Annexes.entete(edition)
+                    contenu_annexe_details += contenu_details
+                    contenu_annexe_details += contenu_details_2
+                    contenu_annexe_details += r'''\end{document}'''
+                    Latex.creer_latex_pdf('Annexe-détails' + suffixe, contenu_annexe_details)
+                    pdfs_annexes['Annexe-détails'] = ['Annexe-détails' + suffixe + ".pdf"]
 
                 if docpdf is not None:
                     pdfs = docpdf.pdfs_pour_client(client, 'Annexe-pièces')
@@ -314,29 +317,32 @@ class Annexes(object):
                     Latex.creer_latex_pdf(nom_pdf, contenu_annexe_interne_a)
                     pdfs_annexes['Annexe-interne'] = pieces
 
-            contenu_annexe_interne_b = Annexes.entete(edition)
+            contenu_interne_b = ""
             if an_couts == "OUI":
-                contenu_annexe_interne_b += Annexes.titre_annexe(client, edition, generaux, reference,
-                                                                 "Coûts d'utilisation", "Annexe interne")
-                contenu_annexe_interne_b += Annexes.section(client, generaux, reference,
-                                                            "Annexe interne / Coûts d’utilisation")
-                contenu_annexe_interne_b += contenu_interne
+                contenu_interne_b += Annexes.titre_annexe(client, edition, generaux, reference, "Coûts d'utilisation",
+                                                          "Annexe interne")
+                contenu_interne_b += Annexes.section(client, generaux, reference,
+                                                     "Annexe interne / Coûts d’utilisation")
+                contenu_interne_b += contenu_interne
 
-            contenu_annexe_interne_b += Annexes.titre_annexe(client, edition, generaux, reference,
-                                                             "Tableaux supplémentaires", "Annexe interne")
-            contenu_annexe_interne_b += Annexes.section(client, generaux, reference,
-                                                        "Annexe interne / Tableaux supplémentaires")
-            contenu_annexe_interne_b += TablesAnnexes.table_prix_xa(scl, generaux)
-            contenu_annexe_interne_b += TablesAnnexes.table_prix_xe(scl, client)
-            contenu_annexe_interne_b += TablesAnnexes.table_prix_cae_xj(code_client, scl, acces.sommes, client,
-                                                                        contenu_prix_cae_xj)
-            contenu_annexe_interne_b += r'''\end{document}'''
-            nom_pdf = 'Annexe-interne' + suffixe
-            Latex.creer_latex_pdf(nom_pdf, contenu_annexe_interne_b)
-            if 'Annexe-interne' in pdfs_annexes:
-                pdfs_annexes['Annexe-interne'].append(nom_pdf + ".pdf")
-            else:
-                pdfs_annexes['Annexe-interne'] = [nom_pdf + ".pdf"]
+            contenu_interne_b += Annexes.titre_annexe(client, edition, generaux, reference, "Tableaux supplémentaires",
+                                                      "Annexe interne")
+            contenu_interne_b += Annexes.section(client, generaux, reference,
+                                                 "Annexe interne / Tableaux supplémentaires")
+            contenu_interne_b += TablesAnnexes.table_prix_xa(scl, generaux)
+            contenu_interne_b += TablesAnnexes.table_prix_xe(scl, client)
+            contenu_interne_b += TablesAnnexes.table_prix_cae_xj(code_client, scl, acces.sommes, client,
+                                                                 contenu_prix_cae_xj)
+            if not contenu_interne_b == "":
+                contenu_annexe_interne_b = Annexes.entete(edition)
+                contenu_annexe_interne_b += contenu_interne_b
+                contenu_annexe_interne_b += r'''\end{document}'''
+                nom_pdf = 'Annexe-interne' + suffixe
+                Latex.creer_latex_pdf(nom_pdf, contenu_annexe_interne_b)
+                if 'Annexe-interne' in pdfs_annexes:
+                    pdfs_annexes['Annexe-interne'].append(nom_pdf + ".pdf")
+                else:
+                    pdfs_annexes['Annexe-interne'] = [nom_pdf + ".pdf"]
 
             for donnee in paramannexe.donnees:
                 if donnee['nom'] in pdfs_annexes:

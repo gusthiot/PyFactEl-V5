@@ -155,22 +155,22 @@ if pg_present:
         Outils.existe(donnee['chemin'], True)
         donnee['lien'] = Outils.lien_dossier([dossier_lien, donnee['dossier']], generaux)
 
+    # faire les annexes avant la facture, que le ticket puisse vérifier leur existence
+    if Latex.possibles():
+        Annexes.annexes(sommes, clients, edition, livraisons, acces, machines, reservations, comptes, paramannexe,
+                        generaux, users, couts, docpdf)
+
     Outils.copier_dossier("./reveal.js/", "js", dossier_enregistrement)
     Outils.copier_dossier("./reveal.js/", "css", dossier_enregistrement)
     facture_prod = Facture()
     f_html_sections = facture_prod.factures(sommes, dossier_destination, edition, generaux, clients, comptes,
-                                            paramannexe, docpdf)
+                                            paramannexe)
 
     prod2qual = Prod2Qual(dossier_source)
     if prod2qual.actif:
         facture_qual = Facture(prod2qual)
         generaux_qual = Generaux(dossier_source, prod2qual)
-        facture_qual.factures(sommes, dossier_destination, edition, generaux_qual, clients, comptes, paramannexe,
-                              docpdf)
-
-    if Latex.possibles():
-        Annexes.annexes(sommes, clients, edition, livraisons, acces, machines, reservations, comptes, paramannexe,
-                        generaux, users, couts, docpdf)
+        facture_qual.factures(sommes, dossier_destination, edition, generaux_qual, clients, comptes, paramannexe)
 
     bm_lignes = BilanMensuel.creation_lignes(edition, sommes, clients, generaux, acces, livraisons, comptes,
                                              reservations)

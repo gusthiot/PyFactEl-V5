@@ -8,7 +8,7 @@ class Emolument(Fichier):
     """
 
     nom_fichier = "emolument.csv"
-    cles = ['annee', 'mois', 'nature', 'emolument']
+    cles = ['nature', 'emolument']
     libelle = "Emoluments"
 
     def __init__(self, *args, **kwargs):
@@ -21,10 +21,6 @@ class Emolument(Fichier):
         :param generaux: paramètres généraux
         :return: 1 s'il y a une erreur, 0 sinon
         """
-        if self.verifie_date == 0:
-            info = self.libelle + ". vous devez vérifier la date avant de vérifier la cohérence"
-            Outils.affiche_message(info)
-            return 1
 
         if self.verifie_coherence == 1:
             print(self.libelle + ": cohérence déjà vérifiée")
@@ -35,6 +31,7 @@ class Emolument(Fichier):
         donnees_dict = {}
         natures = []
 
+        del self.donnees[0]
         for donnee in self.donnees:
             if donnee['nature'] == "":
                 msg += "la nature client de la ligne " + str(ligne) + " ne peut être vide\n"
@@ -50,8 +47,6 @@ class Emolument(Fichier):
             donnee['emolument'], info = Outils.est_un_nombre(donnee['emolument'], "l'émolument", ligne)
             msg += info
 
-            del donnee['annee']
-            del donnee['mois']
             donnees_dict[donnee['nature']] = donnee
             ligne += 1
 

@@ -695,12 +695,13 @@ class TablesAnnexes(object):
                                         rem = "; Remarque : " + liv['remarque']
                                     if liv['date_livraison'] != "":
                                         dl = "Dt livraison: " + liv['date_livraison'] + ";"
+                                    op = users.donnees[liv['id_operateur']]
                                     dico_pos = {'date_liv': Latex.echappe_caracteres(dl),
                                                 'quantite': "%.1f" % liv['quantite'],
                                                 'rabais': Outils.format_2_dec(liv['rabais_r']),
                                                 'id': Latex.echappe_caracteres(liv['id_livraison']),
                                                 'unite': Latex.echappe_caracteres(sip['unite']),
-                                                'responsable': Latex.echappe_caracteres(liv['responsable']),
+                                                'responsable': Latex.echappe_caracteres(op['prenom'] + " " + op['nom']),
                                                 'commande': Latex.echappe_caracteres(liv['date_commande']),
                                                 'remarque': Latex.echappe_caracteres(rem)}
                                     contenu += r'''
@@ -797,7 +798,8 @@ class TablesAnnexes(object):
 
                                     rem = ""
                                     if id_user != cae['id_op']:
-                                        rem += "op : " + cae['nom_op']
+                                        op = users.donnees[id_user]
+                                        rem += "op : " + op['nom'] + " " + op['prenom']
                                     if cae['remarque_op'] != "":
                                         if rem != "":
                                             rem += "; "

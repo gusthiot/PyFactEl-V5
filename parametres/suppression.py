@@ -23,7 +23,7 @@ class Suppression(object):
         except IOError as e:
             Outils.fatal(e, "impossible d'ouvrir le fichier : "+Suppression.nom_fichier)
 
-        num = 5
+        num = 4
         if len(donnees_csv) != num:
             Outils.fatal(ErreurConsistance(),
                          Suppression.libelle + ": nombre de lignes incorrect : " +
@@ -44,4 +44,3 @@ class Suppression(object):
                          Suppression.libelle + ": la version doit être positive ")
 
         self.client_unique = donnees_csv[3][1]
-        self.chemin = donnees_csv[4][1]

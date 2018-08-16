@@ -7,7 +7,7 @@ class CoefPrest(Fichier):
     Classe pour l'importation des données de Coefficients Prestations
     """
 
-    cles = ['annee', 'mois', 'nature', 'categorie', 'coefficient']
+    cles = ['nature', 'categorie', 'coefficient']
     nom_fichier = "coeffprestation.csv"
     libelle = "Coefficients Prestations"
 
@@ -37,10 +37,6 @@ class CoefPrest(Fichier):
         :param generaux: paramètres généraux
         :return: 1 s'il y a une erreur, 0 sinon
         """
-        if self.verifie_date == 0:
-            info = self.libelle + ". vous devez vérifier la date avant de vérifier la cohérence"
-            Outils.affiche_message(info)
-            return 1
 
         if self.verifie_coherence == 1:
             print(self.libelle + ": cohérence déjà vérifiée")
@@ -53,6 +49,7 @@ class CoefPrest(Fichier):
         donnees_dict = {}
         natures = []
 
+        del self.donnees[0]
         for donnee in self.donnees:
             if donnee['nature'] == "":
                 msg += "la nature client de la ligne " + str(ligne) + " ne peut être vide\n"
@@ -81,8 +78,6 @@ class CoefPrest(Fichier):
             donnee['coefficient'], info = Outils.est_un_nombre(donnee['coefficient'], "le coefficient", ligne)
             msg += info
 
-            del donnee['annee']
-            del donnee['mois']
             donnees_dict[donnee['nature'] + donnee['categorie']] = donnee
             ligne += 1
 

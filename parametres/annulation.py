@@ -23,7 +23,7 @@ class Annulation(object):
         except IOError as e:
             Outils.fatal(e, "impossible d'ouvrir le fichier : "+Annulation.nom_fichier)
 
-        num = 5
+        num = 4
         if len(donnees_csv) != num:
             Outils.fatal(ErreurConsistance(),
                          Annulation.libelle + ": nombre de lignes incorrect : " +
@@ -36,7 +36,7 @@ class Annulation(object):
                          "\nle mois et l'année doivent être des nombres entiers")
 
         try:
-            self.annule_version = int(donnees_csv[4][1])
+            self.annule_version = int(donnees_csv[2][1])
         except ValueError as e:
             Outils.fatal(e, Annulation.libelle +
                          "\nla version doit être un nombre entier")
@@ -44,6 +44,5 @@ class Annulation(object):
             Outils.fatal(ErreurConsistance(),
                          Annulation.libelle + ": la version doit être positive")
 
-        self.client_unique = donnees_csv[2][1]
-        self.chemin = donnees_csv[3][1]
+        self.client_unique = donnees_csv[3][1]
         self.recharge_version = self.annule_version - 1

@@ -26,11 +26,12 @@ class Compte(Fichier):
                     return 1
         return 0
 
-    def est_coherent(self, clients):
+    def est_coherent(self, clients, generaux):
         """
         vérifie que les données du fichier importé sont cohérentes (code client dans clients,
         id compte unique), et efface les colonnes mois et année
         :param clients: clients importés
+        :param generaux: paramètres généraux
         :return: 1 s'il y a une erreur, 0 sinon
         """
         if self.verifie_date == 0:
@@ -61,6 +62,8 @@ class Compte(Fichier):
             else:
                 msg += "l'id compte '" + donnee['id_compte'] + "' de la ligne " + str(ligne) +\
                        " n'est pas unique\n"
+            if donnee['type_tarif'] != generaux.code_t:
+                msg += "le type de tarif de la ligne " + str(ligne) + " n'est pas correct\n"
 
             del donnee['annee']
             del donnee['mois']

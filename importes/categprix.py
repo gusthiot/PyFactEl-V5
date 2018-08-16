@@ -8,7 +8,7 @@ class CategPrix(Fichier):
     """
 
     nom_fichier = "categprix.csv"
-    cles = ['annee', 'mois', 'nature', 'id_cat_cout', 'prix_h_mach_p', 'prix_h_mo_o']
+    cles = ['nature', 'id_cat_cout', 'prix_h_mach_p', 'prix_h_mo_o']
     libelle = "Catégories Prix"
 
     def __init__(self, *args, **kwargs):
@@ -22,10 +22,6 @@ class CategPrix(Fichier):
         :param couts: catégories coûts importés
         :return: 1 s'il y a une erreur, 0 sinon
         """
-        if self.verifie_date == 0:
-            info = self.libelle + ". vous devez vérifier la date avant de vérifier la cohérence"
-            Outils.affiche_message(info)
-            return 1
 
         if self.verifie_coherence == 1:
             print(self.libelle + ": cohérence déjà vérifiée")
@@ -38,6 +34,7 @@ class CategPrix(Fichier):
         couples = []
         ids = []
 
+        del self.donnees[0]
         for donnee in self.donnees:
             if donnee['nature'] == "":
                 msg += "la nature client de la ligne " + str(ligne) + " ne peut être vide\n"
@@ -73,8 +70,6 @@ class CategPrix(Fichier):
                                                                ligne)
             msg += info
 
-            del donnee['annee']
-            del donnee['mois']
             donnees_dict[donnee['nature'] + donnee['id_cat_cout']] = donnee
             ligne += 1
 

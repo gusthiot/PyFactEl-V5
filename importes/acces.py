@@ -9,7 +9,7 @@ class Acces(Fichier):
     """
 
     cles = ['annee', 'mois', 'id_compte', 'id_user', 'id_machine', 'date_login', 'duree_machine_hp', 'duree_machine_hc',
-            'duree_operateur', 'id_op', 'nom_op', 'remarque_op', 'remarque_staff']
+            'duree_operateur', 'id_op', 'remarque_op', 'remarque_staff']
     nom_fichier = "cae.csv"
     libelle = "Contrôle Accès Equipement"
 

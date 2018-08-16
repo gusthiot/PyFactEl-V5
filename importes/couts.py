@@ -7,7 +7,7 @@ class Couts(Fichier):
     Classe pour l'importation des données de Catégories de Coûts
     """
 
-    cles = ['annee', 'mois', 'id_cat_cout', 'intitule', 'U1', 'U2', 'U3', 'MO']
+    cles = ['id_cat_cout', 'intitule', 'U1', 'U2', 'U3', 'MO']
     nom_fichier = "categcout.csv"
     libelle = "Catégories Coûts"
 
@@ -35,10 +35,6 @@ class Couts(Fichier):
         et efface les colonnes mois et année
         :return: 1 s'il y a une erreur, 0 sinon
         """
-        if self.verifie_date == 0:
-            info = self.libelle + ". vous devez vérifier la date avant de vérifier la cohérence"
-            Outils.affiche_message(info)
-            return 1
 
         if self.verifie_coherence == 1:
             print(self.libelle + ": cohérence déjà vérifiée")
@@ -49,6 +45,7 @@ class Couts(Fichier):
         donnees_dict = {}
         ids = []
 
+        del self.donnees[0]
         for donnee in self.donnees:
 
             if donnee['id_cat_cout'] == "":
@@ -71,8 +68,6 @@ class Couts(Fichier):
             donnee['MO'], info = Outils.est_un_nombre(donnee['MO'], "le coût MO ", ligne)
             msg += info
 
-            del donnee['annee']
-            del donnee['mois']
             donnees_dict[donnee['id_cat_cout']] = donnee
             ligne += 1
 

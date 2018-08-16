@@ -23,10 +23,10 @@ class Recapitulatifs(object):
         with dossier_destination.writer(nom) as fichier_writer:
 
             ligne = [edition.annee, edition.mois, "Id-Compte", "Numéro de compte", "Intitulé compte",
-                     "Code Type Compte", "Code Client Facture", "Abrev. Labo", "Id-User", "Nom User", "Prénom User",
-                     "Id-Machine", "Nom Machine", "Id-Categ-cout", "Intitulé catégorie coût","Date et Heure login",
-                     "Durée machine HP", "Durée machine HC", "Durée opérateur", "Id-Opérateur", "Prénom Nom opérateur",
-                     "Remarque opérateur", "Remarque staff"]
+                     "Code Type Compte", "Code Type Subsides", "Code Client Facture", "Abrev. Labo", "Id-User",
+                     "Nom User", "Prénom User", "Id-Machine", "Nom Machine", "Id-Categ-cout", "Intitulé catégorie coût",
+                     "Date et Heure login", "Durée machine HP", "Durée machine HC", "Durée opérateur", "Id-Opérateur",
+                     "Prénom Nom opérateur", "Remarque opérateur", "Remarque staff"]
             fichier_writer.writerow(ligne)
 
             for ligne in lignes:
@@ -50,14 +50,15 @@ class Recapitulatifs(object):
             compte = comptes.donnees[donnee['id_compte']]
             client = clients.donnees[compte['code_client']]
             user = users.donnees[donnee['id_user']]
+            op = users.donnees[donnee['id_op']]
             machine = machines.donnees[donnee['id_machine']]
             id_cout = machine['id_cout']
             ligne = [edition.annee, edition.mois, donnee['id_compte'], compte['numero'], compte['intitule'],
-                     compte['type_tarif'], compte['code_client'], client['abrev_labo'], donnee['id_user'], user['nom'],
-                     user['prenom'], donnee['id_machine'], machine['nom'], machine['id_cout'],
-                     couts.donnees[id_cout]['intitule'], donnee['date_login'], donnee['duree_machine_hp'],
-                     donnee['duree_machine_hc'], donnee['duree_operateur'], donnee['id_op'], donnee['nom_op'],
-                     donnee['remarque_op'], donnee['remarque_staff']]
+                     compte['type_tarif'], compte['type_subside'], compte['code_client'], client['abrev_labo'],
+                     donnee['id_user'], user['nom'], user['prenom'], donnee['id_machine'], machine['nom'],
+                     machine['id_cout'], couts.donnees[id_cout]['intitule'], donnee['date_login'],
+                     donnee['duree_machine_hp'], donnee['duree_machine_hc'], donnee['duree_operateur'], donnee['id_op'],
+                     op['prenom'] + " " + op['nom'], donnee['remarque_op'], donnee['remarque_staff']]
             lignes.append(ligne)
         return lignes
 
@@ -77,10 +78,11 @@ class Recapitulatifs(object):
         with dossier_destination.writer(nom) as fichier_writer:
 
             ligne = [edition.annee, edition.mois, "Id-Compte", "Numéro de compte", "Intitulé compte",
-                     "Code Type Compte", "Code Client Facture", "Abrev. Labo", "Id-User", "Nom User", "Prénom User",
-                     "Id-Prestation", "Numéro de prestation", "Désignation prestation", "Date de livraison",
-                     "Quantité livrée", "Unité de livraison", "Rabais [CHF]", "Responsable", "ID-Livraison",
-                     "Date et Heure de la commande", "Date et Heure de la prise en charge", "Remarque"]
+                     "Code Type Compte", "Code Type Subsides", "Code Client Facture", "Abrev. Labo", "Id-User",
+                     "Nom User", "Prénom User", "Id-Prestation", "Numéro de prestation", "Désignation prestation",
+                     "Date de livraison", "Quantité livrée", "Unité de livraison", "Rabais [CHF]", "ID-Opérateur",
+                     "Opérateur", "ID-Livraison", "Date et Heure de la commande", "Date et Heure de la prise en charge",
+                     "Remarque"]
             fichier_writer.writerow(ligne)
 
             for ligne in lignes:
@@ -103,13 +105,15 @@ class Recapitulatifs(object):
             compte = comptes.donnees[donnee['id_compte']]
             client = clients.donnees[compte['code_client']]
             user = users.donnees[donnee['id_user']]
+            op = users.donnees[donnee['id_operateur']]
             prestation = prestations.donnees[donnee['id_prestation']]
             ligne = [edition.annee, edition.mois, donnee['id_compte'], compte['numero'], compte['intitule'],
-                     compte['type_tarif'], compte['code_client'], client['abrev_labo'], donnee['id_user'], user['nom'],
-                     user['prenom'], donnee['id_prestation'], prestation['no_prestation'],
-                     prestation['designation'], donnee['date_livraison'], donnee['quantite'],
-                     prestation['unite_prest'], donnee['rabais'], donnee['responsable'], donnee['id_livraison'],
-                     donnee['date_commande'], donnee['date_prise'], donnee['remarque']]
+                     compte['type_tarif'], compte['type_subside'], compte['code_client'], client['abrev_labo'],
+                     donnee['id_user'], user['nom'], user['prenom'], donnee['id_prestation'],
+                     prestation['no_prestation'], prestation['designation'], donnee['date_livraison'],
+                     donnee['quantite'], prestation['unite_prest'], donnee['rabais'], donnee['id_operateur'],
+                     op['prenom'] + " " + op['nom'], donnee['id_livraison'], donnee['date_commande'],
+                     donnee['date_prise'], donnee['remarque']]
             lignes.append(ligne)
         return lignes
 
@@ -128,8 +132,9 @@ class Recapitulatifs(object):
 
         with dossier_destination.writer(nom) as fichier_writer:
 
-            ligne = [edition.annee, edition.mois, "Code Client Facture", "Abrev. Labo", "Id-User", "Nom User",
-                     "Prénom User", "Id-Machine", "Nom Machine", "Date et Heure début de slot",
+            ligne = [edition.annee, edition.mois, "Id-Compte", "Numéro de compte", "Intitulé compte",
+                     "Code Type Compte", "Code Type Subsides", "Code Client Facture", "Abrev. Labo", "Id-User",
+                     "Nom User", "Prénom User", "Id-Machine", "Nom Machine", "Date et Heure début de slot",
                      "Durée du slot réservé HP", "Durée du slot réservé HC", "Durée ouvrée",
                      "Date et Heure de réservation", "Date et Heure de suppression"]
             fichier_writer.writerow(ligne)
@@ -155,7 +160,8 @@ class Recapitulatifs(object):
             client = clients.donnees[compte['code_client']]
             user = users.donnees[donnee['id_user']]
             machine = machines.donnees[donnee['id_machine']]
-            ligne = [edition.annee, edition.mois, compte['code_client'], client['abrev_labo'],
+            ligne = [edition.annee, edition.mois, donnee['id_compte'], compte['numero'], compte['intitule'],
+                     compte['type_tarif'], compte['type_subside'], compte['code_client'], client['abrev_labo'],
                      donnee['id_user'], user['nom'], user['prenom'], donnee['id_machine'], machine['nom'],
                      donnee['date_debut'], donnee['duree_hp'], donnee['duree_hc'],
                      donnee['duree_ouvree'], donnee['date_reservation'], donnee['date_suppression']]

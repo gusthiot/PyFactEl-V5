@@ -14,12 +14,12 @@ class Generaux(object):
 
     nom_fichier = "paramgen.csv"
     libelle = "Paramètres Généraux"
-    cles_obligatoires = ['centre', 'origine', 'code_int', 'code_ext', 'commerciale', 'canal', 'secteur', 'devise',
-                         'financier', 'fonds', 'entete', 'poste_emolument', 'poste_reservation',  'lien', 'chemin',
-                         'code_t', 'code_n', 'code_ref_fact', 'avantage_HC', 'annexe_cout', 'filtrer_article_nul',
-                         'code_d', 'code_sap', 'quantite', 'unite', 'type_prix', 'type_rabais', 'texte_sap',
-                         'intitule_long', 'intitule_court', 'eligible_U1', 'eligible_U2', 'eligible_U3', 'modes',
-                         'min_fact_rese']
+    cles_obligatoires = ['centre', 'code_cfact_centre', 'origine', 'code_int', 'code_ext', 'commerciale', 'canal',
+                         'secteur', 'devise', 'financier', 'fonds', 'entete', 'poste_emolument', 'poste_reservation',
+                         'lien', 'chemin', 'chemin_propre', 'code_t', 'code_n', 'code_ref_fact', 'avantage_HC',
+                         'annexe_cout', 'filtrer_article_nul', 'code_d', 'code_sap', 'quantite', 'unite', 'type_prix',
+                         'type_rabais', 'texte_sap', 'intitule_long', 'intitule_court', 'eligible_U1', 'eligible_U2',
+                         'eligible_U3', 'modes', 'min_fact_rese']
     cles_autorisees = cles_obligatoires + ['code_sap_qas']
 
     def __init__(self, dossier_source, prod2qual=None):

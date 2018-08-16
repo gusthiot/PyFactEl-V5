@@ -8,7 +8,7 @@ class Livraison(Fichier):
     """
 
     cles = ['annee', 'mois', 'id_compte', 'id_user', 'id_prestation', 'date_livraison', 'quantite', 'rabais',
-            'responsable', 'id_livraison', 'date_commande', 'date_prise', 'remarque']
+            'id_operateur', 'id_livraison', 'date_commande', 'date_prise', 'remarque']
     nom_fichier = "lvr.csv"
     libelle = "Livraison Prestations"
 

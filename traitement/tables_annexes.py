@@ -798,7 +798,7 @@ class TablesAnnexes(object):
 
                                     rem = ""
                                     if id_user != cae['id_op']:
-                                        op = users.donnees[id_user]
+                                        op = users.donnees[cae['id_op']]
                                         rem += "op : " + op['nom'] + " " + op['prenom']
                                     if cae['remarque_op'] != "":
                                         if rem != "":

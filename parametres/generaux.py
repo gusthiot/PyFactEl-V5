@@ -167,10 +167,10 @@ def ajoute_accesseur_pour_valeur_unique(cls, nom, cle_csv=None):
         return self._donnees[cle_csv][1]
     setattr(cls, nom, property(accesseur))
 
+
 ajoute_accesseur_pour_valeur_unique(Generaux, "centre_financier", "financier")
 
-for champ_valeur_unique in ('fonds', 'entete', 'chemin', 'lien', 'min_fact_rese',
-                            'poste_emolument', 'devise', 'canal', 'secteur',
-                            'origine', 'commerciale', 'poste_reservation',
-                            'code_int', 'code_ext', 'code_t', 'centre'):
+for champ_valeur_unique in ('fonds', 'entete', 'chemin', 'lien', 'min_fact_rese', 'poste_emolument', 'devise', 'canal',
+                            'secteur', 'origine', 'commerciale', 'poste_reservation', 'code_int', 'code_ext', 'code_t',
+                            'centre', 'code_cfact_centre', 'chemin_propre'):
     ajoute_accesseur_pour_valeur_unique(Generaux, champ_valeur_unique)

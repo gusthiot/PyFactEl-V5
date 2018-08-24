@@ -34,8 +34,9 @@ from outils import Outils
 from parametres import (Edition,
                         DocPdf,
                         Paramannexe,
-                        Suppression,
-                        Annulation,
+                        SuppressionFacture,
+                        AnnulationVersion,
+                        AnnulationSuppression,
                         Generaux)
 from traitement import (Annexes,
                         BilanMensuel,
@@ -61,31 +62,43 @@ else:
 dossier_source = DossierSource(dossier_data)
 
 pe_present = Outils.existe(Outils.chemin([dossier_data, Edition.nom_fichier]))
-sup_present = Outils.existe(Outils.chemin([dossier_data, Suppression.nom_fichier]))
-ann_present = Outils.existe(Outils.chemin([dossier_data, Annulation.nom_fichier]))
+sup_present = Outils.existe(Outils.chemin([dossier_data, SuppressionFacture.nom_fichier]))
+ann_present = Outils.existe(Outils.chemin([dossier_data, AnnulationVersion.nom_fichier]))
+ann_sup_present = Outils.existe(Outils.chemin([dossier_data, AnnulationSuppression.nom_fichier]))
 
-if pe_present and sup_present and not ann_present:
+if pe_present and sup_present:
         msg = "Deux fichiers bruts incompatibles dans le répertoire : supprfact.csv et paramedit.csv"
         Outils.affiche_message(msg)
         sys.exit("Erreur sur les fichiers")
 
-if pe_present and ann_present and not sup_present:
+if pe_present and ann_present:
         msg = "Deux fichiers bruts incompatibles dans le répertoire : paramedit.csv et annulversion.csv"
         Outils.affiche_message(msg)
         sys.exit("Erreur sur les fichiers")
 
-if ann_present and sup_present and not pe_present:
+if ann_present and sup_present:
     msg = "Deux fichiers bruts incompatibles dans le répertoire : supprfact.csv et annulversion.csv"
     Outils.affiche_message(msg)
     sys.exit("Erreur sur les fichiers")
 
-if ann_present and sup_present and pe_present:
-    msg = "Trois fichiers bruts incompatibles dans le répertoire : supprfact.csv, annulversion.csv et paramedit.csv"
+if pe_present and ann_sup_present:
+        msg = "Deux fichiers bruts incompatibles dans le répertoire : annulsuppr.csv et paramedit.csv"
+        Outils.affiche_message(msg)
+        sys.exit("Erreur sur les fichiers")
+
+if ann_sup_present and ann_present:
+        msg = "Deux fichiers bruts incompatibles dans le répertoire : annulsuppr.csv et annulversion.csv"
+        Outils.affiche_message(msg)
+        sys.exit("Erreur sur les fichiers")
+
+if ann_sup_present and sup_present:
+    msg = "Deux fichiers bruts incompatibles dans le répertoire : annulsuppr.csv et annulversion.csv"
     Outils.affiche_message(msg)
     sys.exit("Erreur sur les fichiers")
 
-if not ann_present and not sup_present and not pe_present:
-    msg = "Ni supprfact.csv, ni paramedit.csv, ni annulversion.csv dans le répértoire, rien ne sera fait !"
+if not ann_present and not sup_present and not pe_present and not ann_sup_present:
+    msg = "Ni supprfact.csv, ni paramedit.csv, ni annulversion.csv , ni annulsuppr.csv " \
+          "dans le répértoire, rien ne sera fait !"
     Outils.affiche_message(msg)
     sys.exit("Erreur sur les fichiers")
 
@@ -124,7 +137,11 @@ if pe_present:
                                            docpdf) > 0:
         sys.exit("Erreur dans la cohérence")
 
-    dossier_enregistrement = Outils.chemin([generaux.chemin, edition.annee, Outils.mois_string(edition.mois)], generaux)
+    if edition.version > 0 and edition.client_unique == generaux.code_cfact_centre:
+        chemin = generaux.chemin_propre
+    else:
+        chemin = generaux.chemin
+    dossier_enregistrement = Outils.chemin([chemin, edition.annee, Outils.mois_string(edition.mois)], generaux)
     existe = Outils.existe(dossier_enregistrement, True)
     dossier_lien = Outils.lien_dossier([generaux.lien, edition.annee, Outils.mois_string(edition.mois)], generaux)
 
@@ -206,37 +223,91 @@ if pe_present:
                                 DossierDestination(dossier_enregistrement), maj, f_html_sections)
 
 if sup_present:
-    suppression = Suppression(dossier_source)
+    suppression = SuppressionFacture(dossier_source)
     dossier_enregistrement = Outils.chemin([generaux.chemin, suppression.annee,
                                             Outils.mois_string(suppression.mois)])
+    suffixe = str(suppression.version) + "_" + suppression.client_unique
+
     if suppression.version == 0:
-        msg = "Le numéro de version doit être supérieur ou égal à 1 !"
+        if not Outils.existe(Outils.chemin([dossier_enregistrement, "csv_0"])):
+            msg = "La version 0 n'existe pas dans " + dossier_enregistrement + ", impossible de supprimer une facture !"
+            Outils.affiche_message(msg)
+            sys.exit("Erreur sur la version")
+
+        dossier_copernic = "csv_0"
+    else:
+        if not Outils.existe(Outils.chemin([dossier_enregistrement, "csv_" + suffixe])):
+            msg = "La version " + str(suppression.version) + " du client " + suppression.client_unique + \
+                  " n'existe pas dans " + dossier_enregistrement + ", impossible de supprimer une facture !"
+            Outils.affiche_message(msg)
+            sys.exit("Erreur sur la version")
+        dossier_copernic = "csv_" + suffixe
+
+    if not Outils.existe(Outils.chemin([dossier_enregistrement, dossier_copernic, "copernic.csv"])):
+            msg = "La version " + str(suppression.version) + \
+                  " n’a pas été émise dans SAP, impossible de supprimer une facture !"
+            Outils.affiche_message(msg)
+            sys.exit("Erreur sur la version")
+
+    dossier_suppr = Outils.chemin([dossier_enregistrement, "suppr_" + suffixe])
+    if Outils.existe(dossier_suppr):
+        msg = "La suppression de la version " + str(suppression.version) + " du client " + suppression.client_unique + \
+              " existe déjà !"
         Outils.affiche_message(msg)
         sys.exit("Erreur sur la version")
 
-    dossier_csv = Outils.chemin([dossier_enregistrement, "csv_" + str(suppression.version) + "_" +
-                                 suppression.client_unique])
-    if Outils.existe(dossier_csv):
-        msg = "La version " + str(suppression.version) + " du client " + suppression.client_unique + " existe déjà !"
-        Outils.affiche_message(msg)
-        sys.exit("Erreur sur la version")
+    Outils.existe(dossier_suppr, True)
 
-    if not Outils.existe(Outils.chemin([dossier_enregistrement, "csv_0"])):
-        msg = "La version 0 n'existe pas dans " + dossier_enregistrement + ", impossible de supprimer une facture !"
-        Outils.affiche_message(msg)
-        sys.exit("Erreur sur la version")
-
-    Outils.existe(dossier_csv, True)
-
-    DossierDestination(dossier_csv).ecrire(suppression.nom_fichier, dossier_source.lire(suppression.nom_fichier))
+    DossierDestination(dossier_suppr).ecrire(suppression.nom_fichier, dossier_source.lire(suppression.nom_fichier))
 
     Resumes.suppression(
         suppression, DossierSource(dossier_enregistrement), DossierDestination(dossier_enregistrement))
 
+if ann_sup_present:
+    annsupp = AnnulationSuppression(dossier_source)
+    dossier_enregistrement = Outils.chemin([generaux.chemin, annsupp.annee,
+                                            Outils.mois_string(annsupp.mois)])
+    suffixe = str(annsupp.version) + "_" + annsupp.client_unique
+    dossier_suppr = Outils.chemin([dossier_enregistrement, "suppr_" + suffixe])
+
+    if not Outils.existe(dossier_suppr):
+        msg = "Annulation de suppression impossible !"
+        Outils.affiche_message(msg)
+        sys.exit("Erreur sur la version")
+
+    if Outils.existe(Outils.chemin([dossier_enregistrement, dossier_suppr, "copernic.csv"])):
+        msg = "Annulation de suppression impossible !"
+        Outils.affiche_message(msg)
+        sys.exit("Erreur sur la version")
+
+    if annsupp.version == 0:
+        dossier_csv = Outils.chemin([dossier_enregistrement, "csv_0"])
+        if not Outils.existe(dossier_csv):
+            msg = "La version 0 à recharger pour le client " + annsupp.client_unique + " n’existe pas !"
+            Outils.affiche_message(msg)
+            sys.exit("Erreur sur la version")
+    else:
+        dossier_csv = Outils.chemin([dossier_enregistrement, "csv_" + suffixe])
+        if not Outils.existe(dossier_csv):
+            msg = "La version " + str(annsupp.version) + " du client " + annsupp.client_unique + \
+                  " à recharger n'existe pas !"
+            Outils.affiche_message(msg)
+            sys.exit("Erreur sur la version")
+
+    DossierDestination(dossier_suppr).ecrire(annsupp.nom_fichier, dossier_source.lire(annsupp.nom_fichier))
+    now = datetime.datetime.now()
+    Outils.renommer_dossier([dossier_enregistrement, "suppr_" + suffixe],
+                            [dossier_enregistrement, "old_" + suffixe + "_" + now.strftime("%Y%m%d_%H%M")])
+    Resumes.annulation(annsupp, DossierSource(dossier_enregistrement),
+                       DossierDestination(dossier_enregistrement), DossierSource(dossier_csv))
+
 if ann_present:
-    annulation = Annulation(dossier_source)
-    dossier_enregistrement = Outils.chemin([generaux.chemin, annulation.annee,
-                                            Outils.mois_string(annulation.mois)])
+    annulation = AnnulationVersion(dossier_source)
+    if annulation.client_unique == generaux.code_cfact_centre:
+        chemin = generaux.chemin_propre
+    else:
+        chemin = generaux.chemin
+    dossier_enregistrement = Outils.chemin([chemin, annulation.annee, Outils.mois_string(annulation.mois)])
     if annulation.annule_version == 0:
         chemin_copernic = Outils.chemin([dossier_enregistrement, "csv_0", "copernic.csv"])
         if Outils.existe(chemin_copernic):
@@ -244,8 +315,7 @@ if ann_present:
             Outils.affiche_message(msg)
             sys.exit("Erreur sur la version")
         else:
-            Outils.effacer_dossier(Outils.chemin([generaux.chemin, annulation.annee,
-                                                  Outils.mois_string(annulation.mois)]))
+            Outils.effacer_dossier(Outils.chemin([chemin, annulation.annee, Outils.mois_string(annulation.mois)]))
     else:
         chemin = Outils.chemin([dossier_enregistrement, "csv_" + str(annulation.annule_version) + "_" +
                                 annulation.client_unique])

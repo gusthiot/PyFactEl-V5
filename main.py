@@ -298,8 +298,8 @@ if ann_sup_present:
     now = datetime.datetime.now()
     Outils.renommer_dossier([dossier_enregistrement, "suppr_" + suffixe],
                             [dossier_enregistrement, "old_" + suffixe + "_" + now.strftime("%Y%m%d_%H%M")])
-    Resumes.annulation(annsupp, DossierSource(dossier_enregistrement),
-                       DossierDestination(dossier_enregistrement), DossierSource(dossier_csv))
+    Resumes.annulation_suppression(annsupp, DossierSource(dossier_enregistrement),
+                                   DossierDestination(dossier_enregistrement), DossierSource(dossier_csv))
 
 if ann_present:
     annulation = AnnulationVersion(dossier_source)

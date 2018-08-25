@@ -150,6 +150,25 @@ class Resumes(object):
             dossier_destination.string_ecrire(ticket_complet, texte)
 
     @staticmethod
+    def annulation_suppression(annulsuppr, dossier_source, dossier_destination, dossier_source_backup):
+        """
+        annulation de modification des résumés mensuels au niveau du client dont la facture est supprimée
+        :param annulsuppr: paramètres d'annulation de suppression
+        :param dossier_source: Une instance de la classe dossier.DossierSource
+        :param dossier_destination: Une instance de la classe dossier.DossierDestination
+        :param dossier_source_backup: Une instance de la classe dossier.DossierSource pour récupérer les
+                                        données à remettre
+        """
+
+        if annulsuppr.version == 0:
+            suffixe = "_0"
+        else:
+            suffixe = "_" + str(annulsuppr.version) + "_" + annulsuppr.client_unique
+
+        Resumes.annuler(suffixe, annulsuppr.client_unique, annulsuppr.mois, annulsuppr.annee, dossier_source,
+                        dossier_destination, dossier_source_backup)
+
+    @staticmethod
     def annulation(annulation, dossier_source, dossier_destination, dossier_source_backup):
         """
         annulation de modification des résumés mensuels au niveau du client dont la facture est supprimée 
@@ -159,32 +178,44 @@ class Resumes(object):
         :param dossier_source_backup: Une instance de la classe dossier.DossierSource pour récupérer les 
                                         données à remettre
         """
-
         if annulation.recharge_version == 0:
             suffixe = "_0"
         else:
             suffixe = "_" + str(annulation.recharge_version) + "_" + annulation.client_unique
 
-        for i in range(len(Resumes.fichiers)):
-            fichier_backup = Resumes.fichiers[i] + "_" + str(annulation.annee) + "_" + \
-                             Outils.mois_string(annulation.mois) + suffixe + ".csv"
-            donnees_backup = Resumes.ouvrir_csv_seulement_client(
-                dossier_source_backup, fichier_backup, annulation.client_unique, Resumes.positions[i])
+        Resumes.annuler(suffixe, annulation.client_unique, annulation.mois, annulation.annee, dossier_source,
+                        dossier_destination, dossier_source_backup)
 
-            fichier_complet = Resumes.fichiers[i] + "_" + str(annulation.annee) + "_" + \
-                              Outils.mois_string(annulation.mois) + ".csv"
+    @staticmethod
+    def annuler(suffixe, client_unique, mois, annee, dossier_source, dossier_destination, dossier_source_backup):
+        """
+        annulation de modification des résumés mensuels au niveau du client dont la facture est supprimée
+        :param suffixe: suffixe dossier version
+        :param client_unique: client concerné
+        :param mois: mois concerné
+        :param annee: année concernée
+        :param dossier_source: Une instance de la classe dossier.DossierSource
+        :param dossier_destination: Une instance de la classe dossier.DossierDestination
+        :param dossier_source_backup: Une instance de la classe dossier.DossierSource pour récupérer les
+                                        données à remettre
+        """
+        for i in range(len(Resumes.fichiers)):
+            fichier_backup = Resumes.fichiers[i] + "_" + str(annee) + "_" + Outils.mois_string(mois) + suffixe + ".csv"
+            donnees_backup = Resumes.ouvrir_csv_seulement_client(
+                dossier_source_backup, fichier_backup, client_unique, Resumes.positions[i])
+
+            fichier_complet = Resumes.fichiers[i] + "_" + str(annee) + "_" + Outils.mois_string(mois) + ".csv"
             donnees_csv = Resumes.ouvrir_csv_sans_client(
-                dossier_source, fichier_complet, annulation.client_unique, Resumes.positions[i])
+                dossier_source, fichier_complet, client_unique, Resumes.positions[i])
             with dossier_destination.writer(fichier_complet) as fichier_writer:
                 for ligne in donnees_csv:
                     fichier_writer.writerow(ligne)
                 for ligne in donnees_backup:
                     fichier_writer.writerow(ligne)
 
-        ticket_backup = "ticket_" + str(annulation.annee) + "_" + Outils.mois_string(annulation.mois) + \
-                        suffixe + ".html"
+        ticket_backup = "ticket_" + str(annee) + "_" + Outils.mois_string(mois) + suffixe + ".html"
         ticket_backup_texte = dossier_source_backup.string_lire(ticket_backup)
-        index1, index2 = Resumes.section_position(ticket_backup_texte, annulation.client_unique)
+        index1, index2 = Resumes.section_position(ticket_backup_texte, client_unique)
         section = ""
         if index1 is not None:
             section = ticket_backup_texte[index1:index2]
@@ -192,14 +223,12 @@ class Resumes(object):
         nom_client = ""
         index1, index2, clients_liste_backup = Resumes.select_clients(ticket_backup_texte)
         for nom in clients_liste_backup:
-            if annulation.client_unique in nom:
+            if client_unique in nom:
                 nom_client = nom
                 break
-        ticket_complet = "ticket_" + str(annulation.annee) + "_" + Outils.mois_string(
-            annulation.mois) + ".html"
+        ticket_complet = "ticket_" + str(annee) + "_" + Outils.mois_string(mois) + ".html"
 
-        Resumes.maj_ticket(dossier_source, dossier_destination, ticket_complet, section, annulation.client_unique,
-                           nom_client)
+        Resumes.maj_ticket(dossier_source, dossier_destination, ticket_complet, section, client_unique, nom_client)
 
     @staticmethod
     def ouvrir_csv_sans_client(dossier_source, fichier, code_client, position_code):

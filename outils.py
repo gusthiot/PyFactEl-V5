@@ -274,7 +274,7 @@ class Outils(object):
         """
         vérifie si le dossier/fichier existe
         :param chemin: chemin du dossier/fichier
-        :param creation: création de l'oobjet s'il n'existe pas
+        :param creation: création de l'objet s'il n'existe pas
         :return: True si le dossier/fichier existe, False sinon
         """
         existe = True

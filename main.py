@@ -108,6 +108,40 @@ if pe_present:
     edition = Edition(dossier_source)
     paramannexe = Paramannexe(dossier_source)
 
+    if edition.version > 0 and edition.client_unique == generaux.code_cfact_centre:
+        chemin = generaux.chemin_propre
+    else:
+        chemin = generaux.chemin
+    dossier_enregistrement = Outils.chemin([chemin, edition.annee, Outils.mois_string(edition.mois)], generaux)
+    existe = Outils.existe(dossier_enregistrement, True)
+    dossier_lien = Outils.lien_dossier([generaux.lien, edition.annee, Outils.mois_string(edition.mois)], generaux)
+
+    if edition.version == 0:
+        if existe:
+            msg = "Le répertoire " + dossier_enregistrement + " existe déjà !"
+            Outils.affiche_message(msg)
+            sys.exit("Erreur sur le répértoire")
+        dossier_csv = Outils.chemin([dossier_enregistrement, "csv_0"], generaux)
+        Outils.existe(dossier_csv, True)
+    else:
+        dossier_csv = Outils.chemin([dossier_enregistrement, "csv_" + str(edition.version) + "_" +
+                                     edition.client_unique])
+        if Outils.existe(dossier_csv, True):
+            msg = "La version " + str(edition.version) + " du client " + edition.client_unique + " existe déjà !"
+            Outils.affiche_message(msg)
+            sys.exit("Erreur sur le répértoire")
+
+        w = edition.version - 1
+        dossier_w = Outils.chemin([dossier_enregistrement, "suppr_" + str(w) + "_" + edition.client_unique])
+        if Outils.existe(dossier_w) and not Outils.existe(Outils.chemin([dossier_w, "copernic.csv"])):
+            msg = "La suppression de la version " + str(edition.version) + " du client " + edition.client_unique + \
+                  " n'a pas été confirmée !"
+            Outils.affiche_message(msg)
+            sys.exit("Erreur sur le répértoire")
+
+
+    dossier_destination = DossierDestination(dossier_csv)
+
     if Outils.existe(Outils.chemin([dossier_data, DocPdf.nom_fichier])):
         docpdf = DocPdf(dossier_source)
     else:
@@ -136,30 +170,6 @@ if pe_present:
                                            livraisons, machines, prestations, reservations, couts, categprix,
                                            docpdf) > 0:
         sys.exit("Erreur dans la cohérence")
-
-    if edition.version > 0 and edition.client_unique == generaux.code_cfact_centre:
-        chemin = generaux.chemin_propre
-    else:
-        chemin = generaux.chemin
-    dossier_enregistrement = Outils.chemin([chemin, edition.annee, Outils.mois_string(edition.mois)], generaux)
-    existe = Outils.existe(dossier_enregistrement, True)
-    dossier_lien = Outils.lien_dossier([generaux.lien, edition.annee, Outils.mois_string(edition.mois)], generaux)
-
-    if edition.version == 0:
-        if existe:
-            msg = "Le répertoire " + dossier_enregistrement + " existe déjà !"
-            Outils.affiche_message(msg)
-            sys.exit("Erreur sur le répértoire")
-        dossier_csv = Outils.chemin([dossier_enregistrement, "csv_0"], generaux)
-        Outils.existe(dossier_csv, True)
-    else:
-        dossier_csv = Outils.chemin([dossier_enregistrement, "csv_" + str(edition.version) + "_" +
-                                     edition.client_unique])
-        if Outils.existe(dossier_csv, True):
-            msg = "La version " + str(edition.version) + " du client " + edition.client_unique + " existe déjà !"
-            Outils.affiche_message(msg)
-            sys.exit("Erreur sur le répértoire")
-    dossier_destination = DossierDestination(dossier_csv)
 
     livraisons.calcul_montants(prestations, coefprests, clients, verification, comptes)
     reservations.calcul_montants(machines, categprix, clients, comptes, verification)

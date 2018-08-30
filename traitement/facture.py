@@ -36,12 +36,15 @@ class Facture(object):
             Outils.affiche_message(info)
             return
 
-        if self.prod2qual:
-            suffixe = "_qualite.csv"
-        else:
-            suffixe = ".csv"
         nom_facture = "facture_" + str(edition.annee) + "_" + Outils.mois_string(edition.mois) + "_" + \
-                      str(edition.version) + suffixe
+                      str(edition.version)
+        if edition.version > 0:
+            nom_facture += "_" + str(edition.client_unique)
+        if self.prod2qual:
+            nom_facture += "_qualite.csv"
+        else:
+            nom_facture += ".csv"
+
         with destination.writer(nom_facture) as fichier_writer:
             fichier_writer.writerow(["Poste", "Système d'origine", "Type de document de vente",
                                      "Organisation commerciale", "Canal de distribution", "Secteur d'activité", "", "",
@@ -265,13 +268,15 @@ class Facture(object):
         :param combo_list: liste des clients et leurs sections
         :param edition: paramètres d'édition
         """
-        if self.prod2qual:
-            suffixe = "_qualite.html"
-        else:
-            suffixe = ".html"
 
         nom = "ticket_" + str(edition.annee) + "_" + Outils.mois_string(edition.mois) + "_" + \
-              str(edition.version) + suffixe
+              str(edition.version)
+        if edition.version > 0:
+            nom += "_" + str(edition.client_unique)
+        if self.prod2qual:
+            nom += "_qualite.html"
+        else:
+            nom += ".html"
         with destination.open(nom) as fichier:
 
             html = r'''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"

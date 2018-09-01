@@ -126,16 +126,17 @@ if pe_present:
     else:
         dossier_csv = Outils.chemin([dossier_enregistrement, "csv_" + str(edition.version) + "_" +
                                      edition.client_unique])
-        if Outils.existe(dossier_csv, True):
-            msg = "La version " + str(edition.version) + " du client " + edition.client_unique + " existe déjà !"
-            Outils.affiche_message(msg)
-            sys.exit("Erreur sur le répértoire")
 
         w = edition.version - 1
         dossier_w = Outils.chemin([dossier_enregistrement, "suppr_" + str(w) + "_" + edition.client_unique])
         if Outils.existe(dossier_w) and not Outils.existe(Outils.chemin([dossier_w, "copernic.csv"])):
-            msg = "La suppression de la version " + str(edition.version) + " du client " + edition.client_unique + \
+            msg = "La suppression de la version " + str(w) + " du client " + edition.client_unique + \
                   " n'a pas été confirmée !"
+            Outils.affiche_message(msg)
+            sys.exit("Erreur sur le répértoire")
+
+        if Outils.existe(dossier_csv, True):
+            msg = "La version " + str(edition.version) + " du client " + edition.client_unique + " existe déjà !"
             Outils.affiche_message(msg)
             sys.exit("Erreur sur le répértoire")
 

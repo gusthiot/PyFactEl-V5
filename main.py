@@ -287,7 +287,8 @@ if ann_sup_present:
         sys.exit("Erreur sur la version")
 
     if Outils.existe(Outils.chemin([dossier_suppr, "copernic.csv"])):
-        msg = "Annulation de suppression impossible !"
+        msg = "Impossible d’annuler l’opération de suppression de la version " + str(annsupp.version) + \
+              " car l’opération a été confirmée !"
         Outils.affiche_message(msg)
         sys.exit("Erreur sur la version")
 

@@ -286,7 +286,7 @@ if ann_sup_present:
         Outils.affiche_message(msg)
         sys.exit("Erreur sur la version")
 
-    if Outils.existe(Outils.chemin([dossier_enregistrement, dossier_suppr, "copernic.csv"])):
+    if Outils.existe(Outils.chemin([dossier_suppr, "copernic.csv"])):
         msg = "Annulation de suppression impossible !"
         Outils.affiche_message(msg)
         sys.exit("Erreur sur la version")

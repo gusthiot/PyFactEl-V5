@@ -113,24 +113,37 @@ class Resumes(object):
     @staticmethod
     def suppression(suppression, dossier_source, dossier_destination):
         """
-        suppression des résumés mensuels au niveau du client dont la facture est supprimée 
+        suppression des résumés mensuels au niveau du client dont la facture est supprimée
         :param suppression: paramètres de suppression
         :param dossier_source: Une instance de la classe dossier.DossierSource
         :param dossier_destination: Une instance de la classe dossier.DossierDestination
         """
 
+        Resumes.supprimmer(suppression.client_unique, suppression.annee, suppression.mois, dossier_source,
+                           dossier_destination)
+
+    @staticmethod
+    def supprimmer(client_unique, mois, annee, dossier_source, dossier_destination):
+        """
+        suppression des résumés mensuels au niveau du client
+        :param client_unique: client concerné
+        :param mois: mois concerné
+        :param annee: année concernée
+        :param dossier_source: Une instance de la classe dossier.DossierSource
+        :param dossier_destination: Une instance de la classe dossier.DossierDestination
+        """
+
         for i in range(len(Resumes.fichiers)):
-            fichier_complet = Resumes.fichiers[i] + "_" + str(suppression.annee) + "_" + \
-                              Outils.mois_string(suppression.mois) + ".csv"
+            fichier_complet = Resumes.fichiers[i] + "_" + str(annee) + "_" + Outils.mois_string(mois) + ".csv"
             donnees_csv = Resumes.ouvrir_csv_sans_client(
-                dossier_source, fichier_complet, suppression.client_unique, Resumes.positions[i])
+                dossier_source, fichier_complet, client_unique, Resumes.positions[i])
             with dossier_destination.writer(fichier_complet) as fichier_writer:
                 for ligne in donnees_csv:
                     fichier_writer.writerow(ligne)
 
-        ticket_complet = "ticket_" + str(suppression.annee) + "_" + Outils.mois_string(suppression.mois) + ".html"
+        ticket_complet = "ticket_" + str(annee) + "_" + Outils.mois_string(mois) + ".html"
         ticket_texte = dossier_source.string_lire(ticket_complet)
-        index1, index2 = Resumes.section_position(ticket_texte, suppression.client_unique)
+        index1, index2 = Resumes.section_position(ticket_texte, client_unique)
         if index1 is not None:
             ticket_texte = ticket_texte[:index1] + ticket_texte[index2:]
             ticket_texte = ticket_texte.replace("..", ".")
@@ -140,7 +153,7 @@ class Resumes(object):
             nouveau_select = r'''<select name="client" onchange="changeClient(this)">'''
             i = 0
             for nom in clients_liste:
-                if suppression.client_unique not in nom:
+                if client_unique not in nom:
                     nouveau_select += r'''<option value="''' + str(i) + r'''">''' + \
                                       str(nom) + r'''</option>'''
                     i += 1

@@ -110,6 +110,8 @@ if pe_present:
 
     if edition.version > 0 and edition.client_unique == generaux.code_cfact_centre:
         chemin = generaux.chemin_propre
+    elif edition.filigrane != "":
+        chemin = generaux.chemin_filigrane
     else:
         chemin = generaux.chemin
     dossier_enregistrement = Outils.chemin([chemin, edition.annee, Outils.mois_string(edition.mois)], generaux)
@@ -228,6 +230,8 @@ if pe_present:
     if edition.filigrane == "":
         if edition.version == 0:
             Resumes.base(edition, DossierSource(dossier_csv), DossierDestination(dossier_enregistrement))
+            Resumes.supprimmer(generaux.code_cfact_centre, edition.mois, edition.annee,
+                               DossierSource(dossier_enregistrement), DossierDestination(dossier_enregistrement))
         elif Outils.existe(Outils.chemin([dossier_enregistrement, "csv_0"])):
             maj = [bm_lignes, bc_lignes, det_lignes, cae_lignes, lvr_lignes, res_lignes]
             Resumes.mise_a_jour(edition, clients, DossierSource(dossier_enregistrement),

@@ -16,10 +16,10 @@ class Generaux(object):
     libelle = "Paramètres Généraux"
     cles_obligatoires = ['centre', 'code_cfact_centre', 'origine', 'code_int', 'code_ext', 'commerciale', 'canal',
                          'secteur', 'devise', 'financier', 'fonds', 'entete', 'poste_emolument', 'poste_reservation',
-                         'lien', 'chemin', 'chemin_propre', 'code_t', 'code_n', 'code_ref_fact', 'avantage_HC',
-                         'annexe_cout', 'filtrer_article_nul', 'code_d', 'code_sap', 'quantite', 'unite', 'type_prix',
-                         'type_rabais', 'texte_sap', 'intitule_long', 'intitule_court', 'eligible_U1', 'eligible_U2',
-                         'eligible_U3', 'modes', 'min_fact_rese']
+                         'lien', 'chemin', 'chemin_propre', 'chemin_filigrane', 'code_t', 'code_n', 'code_ref_fact',
+                         'avantage_HC', 'annexe_cout', 'filtrer_article_nul', 'code_d', 'code_sap', 'quantite', 'unite',
+                         'type_prix', 'type_rabais', 'texte_sap', 'intitule_long', 'intitule_court', 'eligible_U1',
+                         'eligible_U2', 'eligible_U3', 'modes', 'min_fact_rese']
     cles_autorisees = cles_obligatoires + ['code_sap_qas']
 
     def __init__(self, dossier_source, prod2qual=None):
@@ -172,5 +172,5 @@ ajoute_accesseur_pour_valeur_unique(Generaux, "centre_financier", "financier")
 
 for champ_valeur_unique in ('fonds', 'entete', 'chemin', 'lien', 'min_fact_rese', 'poste_emolument', 'devise', 'canal',
                             'secteur', 'origine', 'commerciale', 'poste_reservation', 'code_int', 'code_ext', 'code_t',
-                            'centre', 'code_cfact_centre', 'chemin_propre'):
+                            'centre', 'code_cfact_centre', 'chemin_propre', 'chemin_filigrane'):
     ajoute_accesseur_pour_valeur_unique(Generaux, champ_valeur_unique)

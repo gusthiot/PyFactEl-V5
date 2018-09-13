@@ -119,7 +119,7 @@ class Resumes(object):
         :param dossier_destination: Une instance de la classe dossier.DossierDestination
         """
 
-        Resumes.supprimmer(suppression.client_unique, suppression.annee, suppression.mois, dossier_source,
+        Resumes.supprimmer(suppression.client_unique, suppression.mois, suppression.annee, dossier_source,
                            dossier_destination)
 
     @staticmethod

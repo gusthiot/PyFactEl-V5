@@ -65,7 +65,7 @@ class Detail(object):
 
                 for num_compte, id_compte in sorted(comptes_utilises.items()):
                     compte = comptes.donnees[id_compte]
-                    base_compte = base_client + [id_compte, num_compte, compte['intitule'], compte['type_tarif']]
+                    base_compte = base_client + [id_compte, num_compte, compte['intitule'], compte['type_subside']]
 
                     if code_client in acces.sommes and id_compte in acces.sommes[code_client]['categories']:
                         som_cats = acces.sommes[code_client]['categories'][id_compte]

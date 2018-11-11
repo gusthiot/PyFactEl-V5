@@ -66,7 +66,7 @@ class BilanComptes(object):
                     sco = sommes.sommes_comptes[code_client][id_compte]
                     ligne = [edition.annee, edition.mois, reference, code_client, client['code_sap'],
                              client['abrev_labo'], client['nom_labo'], 'U', client['nature'], id_compte, num_compte,
-                             compte['intitule'], compte['type_tarif'], Outils.format_2_dec(sco['somme_j_mai']),
+                             compte['intitule'], compte['type_subside'], Outils.format_2_dec(sco['somme_j_mai']),
                              Outils.format_2_dec(sco['somme_j_moi']),
                              Outils.format_2_dec(client['rh'] * sco['somme_j_dhi']), Outils.format_2_dec(sco['mj'])]
                     total = sco['mj']

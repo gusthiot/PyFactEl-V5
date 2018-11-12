@@ -21,7 +21,7 @@ class Latex(object):
         :return: texte échappé
         """
 
-        p = re.compile("[^ a-zA-Z0-9_'Éèéêëâàäïûùüçöô.:,;\-%#&@\\\\$/|()\[\]\{\}]")
+        p = re.compile("[^ a-zA-Z0-9_'Éèéêëâàäïûùüçöô.:,;+\-%#&@\\\\$/|()\[\]\{\}]")
         texte = p.sub('', texte)
 
         texte = texte.replace('\\', '\\textbackslash')

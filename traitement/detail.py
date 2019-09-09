@@ -63,7 +63,7 @@ class Detail(object):
                 base_client = [edition.annee, edition.mois, code_client, client['code_sap'], client['abrev_labo'],
                                'U', client['nature']]
 
-                for num_compte, id_compte in sorted(comptes_utilises.items()):
+                for id_compte, num_compte in sorted(comptes_utilises.items(), key=lambda x: x[1]):
                     compte = comptes.donnees[id_compte]
                     base_compte = base_client + [id_compte, num_compte, compte['intitule'], compte['type_subside']]
 

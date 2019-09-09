@@ -148,7 +148,7 @@ class Facture(object):
                     sclo = sommes.sommes_comptes[code_client]
                     comptes_utilises = Outils.comptes_in_somme(sclo, comptes)
 
-                    for num_compte, id_compte in sorted(comptes_utilises.items()):
+                    for id_compte, num_compte in sorted(comptes_utilises.items(), key=lambda x: x[1]):
                         sco = sclo[id_compte]
                         compte = comptes.donnees[id_compte]
                         if sco['c1'] > 0 and not (filtre == "OUI" and sco['c2'] == 0):

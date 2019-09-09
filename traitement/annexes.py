@@ -62,7 +62,7 @@ class Annexes(object):
             if code_client in sommes.sommes_comptes:
                 comptes_utilises = Outils.comptes_in_somme(sommes.sommes_comptes[code_client], comptes)
 
-                for num_compte, id_compte in sorted(comptes_utilises.items()):
+                for id_compte, num_compte in sorted(comptes_utilises.items(), key=lambda x: x[1]):
                     id_compte = Latex.echappe_caracteres(id_compte)
 
                     # ## COMPTE

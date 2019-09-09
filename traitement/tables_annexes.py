@@ -332,7 +332,7 @@ class TablesAnnexes(object):
 
                                         comptes_utilises = Outils.comptes_in_somme(smu['comptes'], comptes)
 
-                                        for num_compte, id_compte in sorted(comptes_utilises.items()):
+                                        for id_compte, num_compte in sorted(comptes_utilises.items(), key=lambda x: x[1]):
                                             smuc = smu['comptes'][id_compte]
                                             compte = comptes.donnees[id_compte]
                                             intitule_compte = Latex.echappe_caracteres(compte['numero']

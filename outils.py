@@ -383,7 +383,7 @@ class Outils(object):
             num = numero
             for dif in range(len(numero), max_size):
                 num = '0' + num
-            if num not in comptes_utilises:
-                comptes_utilises[num] = key
+            if key not in comptes_utilises:
+                comptes_utilises[key] = num
 
         return comptes_utilises

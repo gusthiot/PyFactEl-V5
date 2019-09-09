@@ -61,7 +61,7 @@ class BilanComptes(object):
                     reference += "-" + str(edition.version)
 
                 comptes_utilises = Outils.comptes_in_somme(sommes.sommes_comptes[code_client], comptes)
-                for num_compte, id_compte in sorted(comptes_utilises.items()):
+                for id_compte, num_compte in sorted(comptes_utilises.items(), key=lambda x: x[1]):
                     compte = comptes.donnees[id_compte]
                     sco = sommes.sommes_comptes[code_client][id_compte]
                     ligne = [edition.annee, edition.mois, reference, code_client, client['code_sap'],
